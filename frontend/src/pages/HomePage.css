@@ -1,0 +1,215 @@
+.hero {
+    position: relative;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 60% 40%, rgba(108, 99, 255, 0.2) 0%, transparent 60%),
+        radial-gradient(ellipse at 20% 80%, rgba(255, 101, 132, 0.15) 0%, transparent 50%);
+}
+
+.hero-content {
+    position: relative;
+    max-width: 640px;
+    padding: 5rem 0 4rem;
+}
+
+.hero-badge {
+    display: inline-block;
+    background: rgba(108, 99, 255, 0.15);
+    color: var(--primary-light);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+    border-radius: 99px;
+    padding: 0.35rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+    letter-spacing: -1.5px;
+}
+
+.hero-sub {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    max-width: 480px;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.hero-stats {
+    display: flex;
+    gap: 2.5rem;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-num {
+    font-size: 1.6rem;
+    font-weight: 800;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat span:last-child {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.1rem;
+}
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 1rem;
+}
+
+@media (max-width: 1200px) {
+    .categories-grid {
+        grid-template-columns: repeat(7, 1fr);
+    }
+}
+
+.cat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1.2rem 0.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: all var(--transition);
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.cat-card:hover {
+    border-color: var(--primary);
+    color: var(--text-primary);
+    transform: translateY(-4px);
+    background: rgba(108, 99, 255, 0.1);
+}
+
+.cat-icon {
+    font-size: 1.8rem;
+}
+
+.cat-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.cta-section {
+    padding: 3rem 0;
+}
+
+.cta-card {
+    background: linear-gradient(135deg, rgba(108, 99, 255, 0.2), rgba(255, 101, 132, 0.1));
+    border: 1px solid rgba(108, 99, 255, 0.3);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.cta-card h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.cta-card p {
+    color: var(--text-secondary);
+    margin-top: 0.3rem;
+}
+
+.footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 0;
+    margin-top: 2rem;
+}
+
+.footer-inner {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: space-between;
+}
+
+.footer-brand {
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.footer-brand p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin-top: 0.2rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.footer-links a {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    transition: color var(--transition);
+}
+
+.footer-links a:hover {
+    color: var(--text-primary);
+}
+
+.footer-copy {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    width: 100%;
+}
+
+@media (max-width: 900px) {
+    .categories-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .categories-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .hero-stats {
+        gap: 1.5rem;
+    }
+
+    .cta-card {
+        flex-direction: column;
+        text-align: center;
+    }
+}
