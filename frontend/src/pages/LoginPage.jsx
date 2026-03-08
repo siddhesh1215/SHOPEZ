@@ -22,7 +22,7 @@ export default function LoginPage() {
                 navigate('/');
             }
         } catch (err) {
-            setError(err?.response?.data?.message || 'Login failed. Please try again.');
+            setError(err?.response?.data?.message || 'Login failed. Please check your credentials and try again.');
         } finally {
             setLoading(false);
         }
@@ -31,9 +31,11 @@ export default function LoginPage() {
     return (
         <div className="auth-page">
             <div className="auth-card card animate-in">
-                <div className="auth-logo">🛒 Shop<span className="gradient-text">EZ</span></div>
-                <h1 className="auth-title">Welcome Back</h1>
-                <p className="auth-sub">Sign in to your account to continue</p>
+                <div className="auth-logo">
+                    Shop<span className="gradient-text">EZ</span>
+                </div>
+                <h1 className="auth-title">Welcome back</h1>
+                <p className="auth-sub">Sign in to your account to continue shopping</p>
 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
@@ -45,6 +47,7 @@ export default function LoginPage() {
                             value={form.email}
                             onChange={(e) => setForm({ ...form, email: e.target.value })}
                             required
+                            autoComplete="email"
                         />
                     </div>
                     <div className="form-group">
@@ -56,6 +59,7 @@ export default function LoginPage() {
                             value={form.password}
                             onChange={(e) => setForm({ ...form, password: e.target.value })}
                             required
+                            autoComplete="current-password"
                         />
                     </div>
 
@@ -67,15 +71,11 @@ export default function LoginPage() {
                 </form>
 
                 <p className="auth-switch">
-                    Don't have an account?{' '}
-                    <Link to="/register" style={{ color: 'var(--primary-light)', fontWeight: 600 }}>Create one</Link>
+                    Don&apos;t have an account?{' '}
+                    <Link to="/register" className="auth-link">Create one</Link>
                 </p>
 
-                <div className="auth-demo">
-                    <p>Demo Accounts:</p>
-                    <button className="demo-btn" onClick={() => setForm({ email: 'customer@demo.com', password: 'demo123' })}>Customer Demo</button>
-                    <button className="demo-btn" onClick={() => setForm({ email: 'seller@demo.com', password: 'demo123' })}>Seller Demo</button>
-                </div>
+
             </div>
         </div>
     );

@@ -13,10 +13,11 @@ export default function ProductDetailPage() {
     const [qty, setQty] = useState(1);
     const [adding, setAdding] = useState(false);
     const [addedMsg, setAddedMsg] = useState('');
+    const [addedSuccess, setAddedSuccess] = useState(false);
     const [selectedImg, setSelectedImg] = useState(0);
     const [review, setReview] = useState({ rating: 5, comment: '' });
     const [reviewLoading, setReviewLoading] = useState(false);
-    const [reviewMsg, setReviewMsg] = useState('');
+    const [reviewMsg, setReviewMsg] = useState({ text: '', ok: false });
 
     useEffect(() => {
         getProductById(id)
@@ -30,10 +31,12 @@ export default function ProductDetailPage() {
         setAdding(true);
         try {
             await addToCart({ productId: product._id, quantity: qty });
-            setAddedMsg('✅ Added to cart!');
+            setAddedMsg('Item added to your cart.');
+            setAddedSuccess(true);
             setTimeout(() => setAddedMsg(''), 3000);
         } catch (err) {
-            setAddedMsg(err?.response?.data?.message || 'Error adding to cart');
+            setAddedMsg(err?.response?.data?.message || 'Could not add to cart. Please try again.');
+            setAddedSuccess(false);
         } finally {
             setAdding(false);
         }
@@ -45,34 +48,39 @@ export default function ProductDetailPage() {
         setReviewLoading(true);
         try {
             await addReview(id, review);
-            setReviewMsg('✅ Review submitted!');
+            setReviewMsg({ text: 'Review submitted successfully.', ok: true });
             const res = await getProductById(id);
             setProduct(res.data.product);
             setReview({ rating: 5, comment: '' });
         } catch (err) {
-            setReviewMsg(err?.response?.data?.message || 'Error submitting review');
+            setReviewMsg({ text: err?.response?.data?.message || 'Could not submit review.', ok: false });
         } finally {
             setReviewLoading(false);
         }
     };
 
-    if (loading) return <div className="spinner-wrap"><div className="spinner"></div></div>;
-    if (!product) return <div className="container" style={{ padding: '4rem' }}><h2>Product not found</h2></div>;
+    if (loading) return <div className="spinner-wrap"><div className="spinner" /></div>;
+    if (!product) return <div className="container" style={{ padding: '4rem' }}><h2>Product not found.</h2></div>;
 
-    const images = product.images?.length ? product.images : [`https://picsum.photos/seed/${id}/600/400`];
+    const fallback = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400"%3E%3Crect width="600" height="400" fill="%231e293b"/%3E%3Ctext x="300" y="205" text-anchor="middle" fill="%2364748b" font-size="16" font-family="sans-serif"%3ENo Image%3C/text%3E%3C/svg%3E';
+    const images = product.images?.length ? product.images : [fallback];
+    const discount = product.discountPrice
+        ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
+        : 0;
 
     return (
         <div className="product-detail">
             <div className="container">
                 {/* Breadcrumb */}
-                <p className="breadcrumb">
-                    <span onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>Home</span>
-                    {' › '}
-                    <span onClick={() => navigate('/products')} style={{ cursor: 'pointer' }}>Products</span>
-                    {' › '}
-                    <span style={{ color: 'var(--text-primary)' }}>{product.name}</span>
-                </p>
+                <nav className="breadcrumb">
+                    <span className="bc-link" onClick={() => navigate('/')}>Home</span>
+                    <span className="bc-sep">/</span>
+                    <span className="bc-link" onClick={() => navigate('/products')}>Products</span>
+                    <span className="bc-sep">/</span>
+                    <span className="bc-current">{product.name}</span>
+                </nav>
 
+                {/* Detail Grid */}
                 <div className="detail-grid">
                     {/* Images */}
                     <div className="detail-images">
@@ -81,63 +89,79 @@ export default function ProductDetailPage() {
                                 src={images[selectedImg]}
                                 alt={product.name}
                                 className="main-img"
-                                onError={(e) => { e.target.src = `https://picsum.photos/seed/${id}/600/400`; }}
+                                onError={(e) => { e.target.src = fallback; }}
                             />
+                            {discount > 0 && (
+                                <span className="detail-discount-badge">-{discount}% OFF</span>
+                            )}
                         </div>
-                        <div className="thumb-strip">
-                            {images.map((img, i) => (
-                                <img
-                                    key={i}
-                                    src={img}
-                                    alt=""
-                                    className={`thumb ${selectedImg === i ? 'active' : ''}`}
-                                    onClick={() => setSelectedImg(i)}
-                                    onError={(e) => { e.target.src = `https://picsum.photos/seed/${id + i}/80/80`; }}
-                                />
-                            ))}
-                        </div>
+                        {images.length > 1 && (
+                            <div className="thumb-strip">
+                                {images.map((img, i) => (
+                                    <img
+                                        key={i}
+                                        src={img}
+                                        alt=""
+                                        className={`thumb ${selectedImg === i ? 'active' : ''}`}
+                                        onClick={() => setSelectedImg(i)}
+                                        onError={(e) => { e.target.src = fallback; }}
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Info */}
                     <div className="detail-info">
-                        <span className="badge badge-primary">{product.category}</span>
+                        <span className="badge badge-neutral">{product.category}</span>
                         <h1 className="detail-name">{product.name}</h1>
-                        {product.brand && <p className="detail-brand">by <strong>{product.brand}</strong></p>}
+                        {product.brand && (
+                            <p className="detail-brand">by <strong>{product.brand}</strong></p>
+                        )}
+
                         <div className="detail-rating">
-                            <span className="stars">{'★'.repeat(Math.round(product.ratings || 0))}{'☆'.repeat(5 - Math.round(product.ratings || 0))}</span>
-                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{product.ratings?.toFixed(1)} · {product.numReviews} reviews</span>
+                            <span className="stars">
+                                {'★'.repeat(Math.round(product.ratings || 0))}{'☆'.repeat(5 - Math.round(product.ratings || 0))}
+                            </span>
+                            <span className="rating-text">
+                                {product.ratings?.toFixed(1)} &middot; {product.numReviews} {product.numReviews === 1 ? 'review' : 'reviews'}
+                            </span>
                         </div>
+
                         <div className="detail-price">
                             {product.discountPrice ? (
                                 <>
-                                    <span className="price-big">₹{product.discountPrice}</span>
-                                    <span className="price-old">₹{product.price}</span>
-                                    <span className="badge badge-danger">
-                                        {Math.round(((product.price - product.discountPrice) / product.price) * 100)}% OFF
-                                    </span>
+                                    <span className="price-big">₹{product.discountPrice.toLocaleString()}</span>
+                                    <span className="price-old">₹{product.price.toLocaleString()}</span>
+                                    <span className="badge badge-danger">{discount}% OFF</span>
                                 </>
                             ) : (
-                                <span className="price-big">₹{product.price}</span>
+                                <span className="price-big">₹{product.price.toLocaleString()}</span>
                             )}
                         </div>
 
-                        <p className="stock-info">
-                            {product.stock > 0 ? (
-                                <span style={{ color: 'var(--success)' }}>✓ In Stock ({product.stock} available)</span>
-                            ) : (
-                                <span style={{ color: 'var(--danger)' }}>✗ Out of Stock</span>
-                            )}
-                        </p>
+                        <div className={`stock-status ${product.stock > 0 ? 'in-stock' : 'out-stock'}`}>
+                            {product.stock > 0
+                                ? `In Stock — ${product.stock} units available`
+                                : 'Out of Stock'}
+                        </div>
 
                         <p className="detail-desc">{product.description}</p>
 
-                        <div className="qty-row">
-                            <button className="qty-btn" onClick={() => setQty(Math.max(1, qty - 1))}>−</button>
-                            <span className="qty-val">{qty}</span>
-                            <button className="qty-btn" onClick={() => setQty(Math.min(product.stock, qty + 1))}>+</button>
-                        </div>
+                        {/* Qty */}
+                        {product.stock > 0 && (
+                            <div className="qty-row">
+                                <button className="qty-btn" onClick={() => setQty(Math.max(1, qty - 1))}>−</button>
+                                <span className="qty-val">{qty}</span>
+                                <button className="qty-btn" onClick={() => setQty(Math.min(product.stock, qty + 1))}>+</button>
+                            </div>
+                        )}
 
-                        {addedMsg && <div className={`alert ${addedMsg.startsWith('✅') ? 'alert-success' : 'alert-error'}`}>{addedMsg}</div>}
+                        {addedMsg && (
+                            <div className={`alert ${addedSuccess ? 'alert-success' : 'alert-error'}`}>
+                                {addedMsg}
+                            </div>
+                        )}
 
                         <div className="detail-actions">
                             <button
@@ -146,7 +170,7 @@ export default function ProductDetailPage() {
                                 disabled={adding || product.stock === 0}
                                 style={{ flex: 1 }}
                             >
-                                {adding ? 'Adding...' : '🛒 Add to Cart'}
+                                {adding ? 'Adding...' : 'Add to Cart'}
                             </button>
                             <button
                                 className="btn btn-outline btn-lg"
@@ -158,7 +182,7 @@ export default function ProductDetailPage() {
                         </div>
 
                         <div className="seller-info">
-                            <p>🏪 Sold by: <strong>{product.seller?.name || 'ShopEZ Seller'}</strong></p>
+                            <p>Sold by: <strong>{product.seller?.name || 'ShopEZ Verified Seller'}</strong></p>
                         </div>
                     </div>
                 </div>
@@ -166,19 +190,25 @@ export default function ProductDetailPage() {
                 {/* Reviews */}
                 <div className="reviews-section">
                     <h2>Customer Reviews</h2>
-                    <div className="divider"></div>
-                    {product.reviews?.length === 0 && <p style={{ color: 'var(--text-secondary)' }}>No reviews yet. Be the first!</p>}
+                    <div className="divider" />
+
+                    {product.reviews?.length === 0 && (
+                        <p className="no-reviews">No reviews yet. Be the first to leave one.</p>
+                    )}
+
                     <div className="reviews-list">
                         {product.reviews?.map((r, i) => (
                             <div key={i} className="review-card">
                                 <div className="review-header">
-                                    <span className="review-avatar">{r.user?.name?.charAt(0) || 'U'}</span>
+                                    <span className="review-avatar">{r.user?.name?.charAt(0)?.toUpperCase() || 'U'}</span>
                                     <div>
-                                        <p className="review-author">{r.user?.name || 'User'}</p>
-                                        <span className="stars" style={{ fontSize: '0.85rem' }}>{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
+                                        <p className="review-author">{r.user?.name || 'Verified Buyer'}</p>
+                                        <span className="stars" style={{ fontSize: '0.8rem' }}>
+                                            {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
+                                        </span>
                                     </div>
-                                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginLeft: 'auto' }}>
-                                        {new Date(r.createdAt).toLocaleDateString()}
+                                    <span className="review-date">
+                                        {new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                                     </span>
                                 </div>
                                 <p className="review-comment">{r.comment}</p>
@@ -186,21 +216,37 @@ export default function ProductDetailPage() {
                         ))}
                     </div>
 
-                    {/* Add Review */}
                     {user && (
                         <form className="add-review-form card" onSubmit={handleReview}>
                             <h3>Write a Review</h3>
                             <div className="form-group">
                                 <label>Rating</label>
-                                <select className="form-control" value={review.rating} onChange={(e) => setReview({ ...review, rating: Number(e.target.value) })}>
-                                    {[5, 4, 3, 2, 1].map((r) => <option key={r} value={r}>{r} ★</option>)}
+                                <select
+                                    className="form-control"
+                                    value={review.rating}
+                                    onChange={(e) => setReview({ ...review, rating: Number(e.target.value) })}
+                                >
+                                    {[5, 4, 3, 2, 1].map((r) => (
+                                        <option key={r} value={r}>{r} Stars</option>
+                                    ))}
                                 </select>
                             </div>
                             <div className="form-group">
-                                <label>Comment</label>
-                                <textarea className="form-control" rows={3} placeholder="Share your experience..." value={review.comment} onChange={(e) => setReview({ ...review, comment: e.target.value })} required />
+                                <label>Your Review</label>
+                                <textarea
+                                    className="form-control"
+                                    rows={3}
+                                    placeholder="Share your experience with this product..."
+                                    value={review.comment}
+                                    onChange={(e) => setReview({ ...review, comment: e.target.value })}
+                                    required
+                                />
                             </div>
-                            {reviewMsg && <div className={`alert ${reviewMsg.startsWith('✅') ? 'alert-success' : 'alert-error'}`}>{reviewMsg}</div>}
+                            {reviewMsg.text && (
+                                <div className={`alert ${reviewMsg.ok ? 'alert-success' : 'alert-error'}`}>
+                                    {reviewMsg.text}
+                                </div>
+                            )}
                             <button type="submit" className="btn btn-primary" disabled={reviewLoading}>
                                 {reviewLoading ? 'Submitting...' : 'Submit Review'}
                             </button>

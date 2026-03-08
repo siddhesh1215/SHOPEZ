@@ -72,7 +72,7 @@ export default function CheckoutPage() {
                         {/* Step 1: Address */}
                         {step === 1 && (
                             <div className="animate-in">
-                                <h3>📦 Shipping Address</h3>
+                                <h3>Shipping Address</h3>
                                 <div className="divider"></div>
                                 <div className="form-group">
                                     <label>Street Address</label>
@@ -108,24 +108,28 @@ export default function CheckoutPage() {
                         {/* Step 2: Payment */}
                         {step === 2 && (
                             <div className="animate-in">
-                                <h3>💳 Payment Method</h3>
+                                <h3>Payment Method</h3>
                                 <div className="divider"></div>
                                 <div className="payment-options">
                                     <div className={`payment-option ${paymentMethod === 'COD' ? 'selected' : ''}`} onClick={() => setPaymentMethod('COD')}>
-                                        <span className="payment-icon">💵</span>
+                                        <div className="payment-icon cod-icon">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" /></svg>
+                                        </div>
                                         <div>
                                             <strong>Cash on Delivery</strong>
                                             <p>Pay when your order arrives</p>
                                         </div>
-                                        <div className={`radio-dot ${paymentMethod === 'COD' ? 'active' : ''}`}></div>
+                                        <div className={`radio-dot ${paymentMethod === 'COD' ? 'active' : ''}`} />
                                     </div>
                                     <div className={`payment-option ${paymentMethod === 'Online' ? 'selected' : ''}`} onClick={() => setPaymentMethod('Online')}>
-                                        <span className="payment-icon">💳</span>
+                                        <div className="payment-icon online-icon">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20h.01" /><path d="M7 20v-4" /><path d="M12 20v-8" /><path d="M17 20V8" /><path d="M22 4v16" /></svg>
+                                        </div>
                                         <div>
                                             <strong>Online Payment</strong>
-                                            <p>UPI / Card / Net Banking (Demo)</p>
+                                            <p>UPI / Card / Net Banking</p>
                                         </div>
-                                        <div className={`radio-dot ${paymentMethod === 'Online' ? 'active' : ''}`}></div>
+                                        <div className={`radio-dot ${paymentMethod === 'Online' ? 'active' : ''}`} />
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
@@ -138,7 +142,7 @@ export default function CheckoutPage() {
                         {/* Step 3: Review */}
                         {step === 3 && (
                             <div className="animate-in">
-                                <h3>📋 Review Your Order</h3>
+                                <h3>Review Your Order</h3>
                                 <div className="divider"></div>
                                 <div className="review-section">
                                     <p className="review-label">Shipping to:</p>
@@ -146,7 +150,7 @@ export default function CheckoutPage() {
                                 </div>
                                 <div className="review-section">
                                     <p className="review-label">Payment:</p>
-                                    <p>{paymentMethod === 'COD' ? '💵 Cash on Delivery' : '💳 Online Payment'}</p>
+                                    <p>{paymentMethod === 'COD' ? 'Cash on Delivery' : 'Online Payment'}</p>
                                 </div>
                                 <div className="review-section">
                                     <p className="review-label">Items ({cart.items.length}):</p>
@@ -162,7 +166,7 @@ export default function CheckoutPage() {
                                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
                                     <button className="btn btn-outline" onClick={() => setStep(2)}>← Back</button>
                                     <button className="btn btn-primary" style={{ flex: 1 }} onClick={handlePlaceOrder} disabled={placing}>
-                                        {placing ? 'Placing Order...' : '✓ Place Order'}
+                                        {placing ? 'Placing Order...' : 'Place Order'}
                                     </button>
                                 </div>
                             </div>
@@ -175,7 +179,7 @@ export default function CheckoutPage() {
                         <div className="divider"></div>
                         {cart.items.map((item) => item.product && (
                             <div key={item._id} className="co-item">
-                                <img src={item.product.images?.[0] || `https://picsum.photos/seed/${item.product._id}/50/50`} alt={item.product.name} onError={(e) => { e.target.src = `https://picsum.photos/seed/${item.product._id}/50/50`; }} />
+                                <img src={item.product.images?.[0] || ''} alt={item.product.name} onError={(e) => { e.target.style.display = 'none'; }} />
                                 <span className="co-name">{item.product.name}</span>
                                 <span>×{item.quantity}</span>
                                 <span>₹{(item.price * item.quantity).toLocaleString()}</span>

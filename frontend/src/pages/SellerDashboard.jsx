@@ -37,8 +37,8 @@ export default function SellerDashboard() {
                 stock: Number(form.stock),
                 images: form.images ? form.images.split(',').map((s) => s.trim()).filter(Boolean) : [],
             };
-            if (editingId) { await updateProduct(editingId, payload); setMsg('✅ Product updated!'); }
-            else { await createProduct(payload); setMsg('✅ Product created!'); }
+            if (editingId) { await updateProduct(editingId, payload); setMsg('Product updated successfully.'); }
+            else { await createProduct(payload); setMsg('Product created successfully.'); }
             await fetchProducts();
             setShowForm(false);
             setEditingId(null);
@@ -80,7 +80,7 @@ export default function SellerDashboard() {
         <div className="dashboard">
             <div className="page-header">
                 <div className="container">
-                    <h1>📊 Seller Dashboard</h1>
+                    <h1>Seller Dashboard</h1>
                     <p>Welcome back, {user?.name}</p>
                 </div>
             </div>
@@ -89,27 +89,27 @@ export default function SellerDashboard() {
                 {/* Stats */}
                 <div className="stats-grid">
                     <div className="stat-card card">
-                        <div className="stat-icon">📦</div>
-                        <div><p className="stat-value">{products.length}</p><p className="stat-label">Products</p></div>
+                        <div className="stat-num">{products.length}</div>
+                        <div className="stat-label">Products Listed</div>
                     </div>
                     <div className="stat-card card">
-                        <div className="stat-icon">🛒</div>
-                        <div><p className="stat-value">{orders.length}</p><p className="stat-label">Total Orders</p></div>
+                        <div className="stat-num">{orders.length}</div>
+                        <div className="stat-label">Total Orders</div>
                     </div>
                     <div className="stat-card card">
-                        <div className="stat-icon">⏳</div>
-                        <div><p className="stat-value">{orders.filter((o) => o.orderStatus === 'Processing').length}</p><p className="stat-label">Pending</p></div>
+                        <div className="stat-num">{orders.filter((o) => o.orderStatus === 'Processing').length}</div>
+                        <div className="stat-label">Pending Orders</div>
                     </div>
                     <div className="stat-card card">
-                        <div className="stat-icon">💰</div>
-                        <div><p className="stat-value">₹{totalRevenue.toLocaleString()}</p><p className="stat-label">Revenue</p></div>
+                        <div className="stat-num">₹{totalRevenue.toLocaleString()}</div>
+                        <div className="stat-label">Total Revenue</div>
                     </div>
                 </div>
 
                 {/* Tabs */}
                 <div className="dash-tabs">
-                    <button className={`dash-tab ${tab === 'products' ? 'active' : ''}`} onClick={() => setTab('products')}>📦 My Products</button>
-                    <button className={`dash-tab ${tab === 'orders' ? 'active' : ''}`} onClick={() => setTab('orders')}>🛒 Orders</button>
+                    <button className={`dash-tab ${tab === 'products' ? 'active' : ''}`} onClick={() => setTab('products')}>My Products</button>
+                    <button className={`dash-tab ${tab === 'orders' ? 'active' : ''}`} onClick={() => setTab('orders')}>Orders</button>
                 </div>
 
                 {/* Products Tab */}
@@ -168,7 +168,7 @@ export default function SellerDashboard() {
                                         <span>Mark as Featured Product</span>
                                     </label>
                                 </div>
-                                {msg && <div className={`alert ${msg.startsWith('✅') ? 'alert-success' : 'alert-error'}`}>{msg}</div>}
+                                {msg && <div className={`alert ${msg.includes('updated') || msg.includes('created') ? 'alert-success' : 'alert-error'}`}>{msg.replace('✅ ', '')}</div>}
                                 <div style={{ display: 'flex', gap: '1rem' }}>
                                     <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving...' : editingId ? 'Update Product' : 'Create Product'}</button>
                                     <button type="button" className="btn btn-outline" onClick={() => { setShowForm(false); setEditingId(null); setForm(EMPTY_FORM); }}>Cancel</button>
@@ -177,7 +177,7 @@ export default function SellerDashboard() {
                         )}
 
                         {products.length === 0 ? (
-                            <div className="empty-state"><div style={{ fontSize: '3rem' }}>📦</div><h3>No products yet</h3><p>Click "Add Product" to get started</p></div>
+                            <div className="empty-state"><h3>No products yet</h3><p>Click &ldquo;Add Product&rdquo; to get started</p></div>
                         ) : (
                             <div className="products-table card" style={{ padding: 0, overflow: 'hidden' }}>
                                 <table>
@@ -223,7 +223,7 @@ export default function SellerDashboard() {
                     <div>
                         <h2 style={{ marginBottom: '1.5rem' }}>Customer Orders ({orders.length})</h2>
                         {orders.length === 0 ? (
-                            <div className="empty-state"><div style={{ fontSize: '3rem' }}>🛒</div><h3>No orders yet</h3><p>Orders from customers will appear here</p></div>
+                            <div className="empty-state"><h3>No orders yet</h3><p>Orders from customers will appear here</p></div>
                         ) : (
                             <div className="orders-table card" style={{ padding: 0, overflow: 'hidden' }}>
                                 <table>
@@ -240,8 +240,8 @@ export default function SellerDashboard() {
                                                 <td style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{new Date(o.createdAt).toLocaleDateString('en-IN')}</td>
                                                 <td>
                                                     <span className={`badge badge-${o.orderStatus === 'Delivered' ? 'success' :
-                                                            o.orderStatus === 'Shipped' ? 'primary' :
-                                                                o.orderStatus === 'Cancelled' ? 'danger' : 'warning'
+                                                        o.orderStatus === 'Shipped' ? 'primary' :
+                                                            o.orderStatus === 'Cancelled' ? 'danger' : 'warning'
                                                         }`}>{o.orderStatus}</span>
                                                 </td>
                                                 <td>

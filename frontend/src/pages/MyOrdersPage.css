@@ -1,14 +1,17 @@
-.my-orders-page {}
+.my-orders-page {
+    padding-top: var(--nav-height);
+    min-height: 100vh;
+}
 
 .orders-list {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    padding: 2rem 0;
+    gap: 1rem;
 }
 
+/* ── Order Card ─────────────────────────────────────── */
 .order-card {
-    padding: 1.5rem;
+    padding: 1.25rem 1.4rem;
 }
 
 .order-card-header {
@@ -16,44 +19,50 @@
     align-items: flex-start;
     justify-content: space-between;
     margin-bottom: 1rem;
+    gap: 1rem;
 }
 
 .order-id {
+    font-size: 0.875rem;
     font-weight: 700;
-    font-size: 0.97rem;
-    margin-bottom: 0.2rem;
+    letter-spacing: 0.03em;
 }
 
 .order-date {
-    color: var(--text-secondary);
-    font-size: 0.82rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.15rem;
 }
 
-.order-status-wrap {}
-
+/* ── Items Preview ──────────────────────────────────── */
 .order-items-preview {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    margin-bottom: 1rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.75rem;
 }
 
 .order-preview-item {
     display: flex;
     align-items: center;
-    gap: 0.8rem;
-    font-size: 0.88rem;
+    gap: 0.75rem;
+    font-size: 0.875rem;
 }
 
 .order-preview-item img {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     object-fit: cover;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
     flex-shrink: 0;
+    background: var(--bg-secondary);
 }
 
-.order-preview-item span:nth-child(2) {
+.preview-name {
     flex: 1;
     color: var(--text-secondary);
     white-space: nowrap;
@@ -62,33 +71,32 @@
 }
 
 .item-qty {
-    color: var(--text-secondary);
-    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    flex-shrink: 0;
 }
 
 .more-items {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    padding-left: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    padding-left: 0.25rem;
 }
 
+/* ── Footer ─────────────────────────────────────────── */
 .order-card-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
-    margin-bottom: 1rem;
+    gap: 1rem;
     flex-wrap: wrap;
-    gap: 0.8rem;
 }
 
 .order-meta {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    font-size: 0.82rem;
-    color: var(--text-secondary);
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
     flex-wrap: wrap;
 }
 
@@ -104,61 +112,69 @@
 
 .order-total {
     font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--primary-light);
+    font-weight: 800;
+    letter-spacing: -0.02em;
 }
 
-/* Timeline */
+/* ── Timeline ───────────────────────────────────────── */
 .order-timeline {
     display: flex;
-    align-items: center;
-    padding-top: 0.8rem;
+    align-items: flex-start;
+    gap: 0;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
     border-top: 1px solid var(--border);
 }
 
 .timeline-step {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    flex: 1;
     position: relative;
+    flex: 1;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-align: center;
+    gap: 0.4rem;
 }
 
 .tl-dot {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     border: 2px solid var(--border);
-    background: var(--bg);
-    flex-shrink: 0;
+    background: var(--bg-card);
     transition: all var(--transition);
+    z-index: 1;
 }
 
 .timeline-step.done .tl-dot {
-    border-color: var(--success);
-    background: var(--success);
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.timeline-step.done {
+    color: var(--primary-light);
 }
 
 .tl-line {
-    flex: 1;
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    right: -50%;
     height: 2px;
     background: var(--border);
-    margin: 0 4px;
-    transition: background var(--transition);
+    z-index: 0;
 }
 
 .tl-line.done {
-    background: var(--success);
+    background: var(--primary);
 }
 
-.timeline-step span {
-    position: absolute;
-    top: 18px;
-    left: -10px;
-    font-size: 0.72rem;
-    color: var(--text-secondary);
-    white-space: nowrap;
-}
-
-.timeline-step.done span {
-    color: var(--success);
+@media (max-width: 600px) {
+    .order-card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

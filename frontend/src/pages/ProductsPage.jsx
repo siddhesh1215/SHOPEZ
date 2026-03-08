@@ -4,7 +4,20 @@ import { getProducts } from '../api/axios';
 import ProductCard from '../components/ProductCard';
 import './ProductsPage.css';
 
-const CATEGORIES = ['All', 'Electronics', 'Fashion', 'Home & Kitchen', 'Sports', 'Books', 'Beauty', 'Toys'];
+const CATEGORIES = ['All', 'Electronics', 'Fashion', 'Home & Kitchen', 'Beauty'];
+
+const SearchIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+);
+
+const NoResultsIcon = () => (
+    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+        <line x1="8" y1="11" x2="14" y2="11" />
+    </svg>
+);
 
 export default function ProductsPage() {
     const [products, setProducts] = useState([]);
@@ -50,16 +63,17 @@ export default function ProductsPage() {
             <div className="page-header">
                 <div className="container">
                     <h1>All Products</h1>
-                    <p>Browse our wide selection of products</p>
+                    <p>Browse our curated catalogue across every category</p>
                 </div>
             </div>
 
             <div className="container products-layout">
                 {/* Sidebar Filters */}
                 <aside className="filters">
-                    <h3 className="filter-title">Filters</h3>
-                    <div className="divider"></div>
-                    <div>
+                    <h3 className="filter-heading">Filters</h3>
+                    <div className="divider" />
+
+                    <div className="filter-group">
                         <p className="filter-label">Category</p>
                         {CATEGORIES.map((cat) => (
                             <button
@@ -71,13 +85,15 @@ export default function ProductsPage() {
                             </button>
                         ))}
                     </div>
-                    <div className="divider"></div>
-                    <div>
+
+                    <div className="divider" />
+
+                    <div className="filter-group">
                         <p className="filter-label">Sort By</p>
                         {[
-                            { val: '', label: 'Newest' },
-                            { val: 'price_asc', label: 'Price: Low → High' },
-                            { val: 'price_desc', label: 'Price: High → Low' },
+                            { val: '', label: 'Newest First' },
+                            { val: 'price_asc', label: 'Price: Low to High' },
+                            { val: 'price_desc', label: 'Price: High to Low' },
                             { val: 'rating', label: 'Top Rated' },
                         ].map((s) => (
                             <button
@@ -91,29 +107,38 @@ export default function ProductsPage() {
                     </div>
                 </aside>
 
-                {/* Main Content */}
+                {/* Main */}
                 <main className="products-main">
                     <form className="search-bar" onSubmit={handleSearch}>
-                        <input
-                            className="form-control"
-                            type="text"
-                            placeholder="Search products..."
-                            value={searchInput}
-                            onChange={(e) => setSearchInput(e.target.value)}
-                        />
+                        <div className="search-input-wrap">
+                            <SearchIcon />
+                            <input
+                                className="form-control search-input"
+                                type="text"
+                                placeholder="Search products..."
+                                value={searchInput}
+                                onChange={(e) => setSearchInput(e.target.value)}
+                            />
+                        </div>
                         <button type="submit" className="btn btn-primary">Search</button>
                         {keyword && (
-                            <button type="button" className="btn btn-outline" onClick={() => { setSearchInput(''); setParam('keyword', ''); }}>Clear</button>
+                            <button
+                                type="button"
+                                className="btn btn-ghost"
+                                onClick={() => { setSearchInput(''); setParam('keyword', ''); }}
+                            >
+                                Clear
+                            </button>
                         )}
                     </form>
 
                     {loading ? (
-                        <div className="spinner-wrap"><div className="spinner"></div></div>
+                        <div className="spinner-wrap"><div className="spinner" /></div>
                     ) : products.length === 0 ? (
                         <div className="empty-state">
-                            <div style={{ fontSize: '4rem' }}>🔍</div>
+                            <NoResultsIcon />
                             <h3>No products found</h3>
-                            <p>Try adjusting your search or filters</p>
+                            <p>Try adjusting your search or changing the filters</p>
                         </div>
                     ) : (
                         <>
@@ -126,7 +151,11 @@ export default function ProductsPage() {
                                         <button
                                             key={p}
                                             className={`page-btn ${page === p ? 'active' : ''}`}
-                                            onClick={() => { const next = new URLSearchParams(searchParams); next.set('page', p); setSearchParams(next); }}
+                                            onClick={() => {
+                                                const next = new URLSearchParams(searchParams);
+                                                next.set('page', p);
+                                                setSearchParams(next);
+                                            }}
                                         >
                                             {p}
                                         </button>

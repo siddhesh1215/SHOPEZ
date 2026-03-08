@@ -11,31 +11,30 @@
 
 .stat-card {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.3rem;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.4rem;
     transition: all var(--transition);
+    gap: 0.3rem;
 }
 
 .stat-card:hover {
-    border-color: rgba(108, 99, 255, 0.35);
-    transform: translateY(-3px);
+    border-color: rgba(37, 99, 235, 0.3);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
 }
 
-.stat-icon {
-    font-size: 2rem;
-}
-
-.stat-value {
-    font-size: 1.5rem;
+.stat-num {
+    font-size: 1.75rem;
     font-weight: 800;
+    letter-spacing: -0.03em;
     color: var(--primary-light);
 }
 
 .stat-label {
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     color: var(--text-secondary);
-    margin-top: 0.1rem;
+    font-weight: 500;
 }
 
 .dash-tabs {
@@ -105,13 +104,13 @@
 
 .products-table th,
 .orders-table th {
-    background: rgba(108, 99, 255, 0.08);
+    background: var(--bg-secondary);
     padding: 0.9rem 1.2rem;
     text-align: left;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text-secondary);
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
     font-weight: 600;
 }
 
@@ -130,7 +129,7 @@
 
 .products-table tr:hover td,
 .orders-table tr:hover td {
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--bg-hover);
 }
 
 .table-product {

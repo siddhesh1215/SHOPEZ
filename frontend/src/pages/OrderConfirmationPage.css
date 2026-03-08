@@ -1,118 +1,131 @@
 .confirmation-page {
-    padding: 3rem 0 5rem;
+    padding-top: calc(var(--nav-height) + 3rem);
+    padding-bottom: 4rem;
+    min-height: 100vh;
 }
 
 .confirmation-card {
-    max-width: 640px;
+    max-width: 680px;
     margin: 0 auto;
-    text-align: center;
     padding: 2.5rem;
 }
 
+/* ── Header ─────────────────────────────────────────── */
+.confirmation-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
 .confirmation-icon {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    animation: bounceIn 0.6s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(22, 163, 74, 0.12);
+    border: 2px solid rgba(22, 163, 74, 0.3);
+    margin: 0 auto 1.25rem;
+    color: var(--success-light);
 }
 
-@keyframes bounceIn {
-    0% {
-        transform: scale(0);
-    }
-
-    60% {
-        transform: scale(1.15);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-.confirmation-card h1 {
-    font-size: 1.8rem;
-    font-weight: 800;
-    margin-bottom: 0.5rem;
+.confirmation-header h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4rem;
 }
 
 .confirmation-sub {
     color: var(--text-secondary);
-    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
 }
 
+/* ── Order ID ───────────────────────────────────────── */
 .order-id-box {
-    background: rgba(108, 99, 255, 0.1);
-    border: 1px solid rgba(108, 99, 255, 0.25);
-    border-radius: 8px;
-    padding: 0.7rem 1.2rem;
-    display: inline-flex;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1.1rem;
+    display: flex;
     align-items: center;
-    gap: 0.8rem;
+    justify-content: space-between;
     margin-bottom: 1.5rem;
-    font-size: 0.85rem;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
-.order-id-box span {
-    color: var(--text-secondary);
+.oid-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
 }
 
-.order-id-box code {
-    font-family: monospace;
-    color: var(--primary-light);
+.oid-value {
     font-size: 0.82rem;
+    font-family: 'Courier New', monospace;
+    color: var(--primary-light);
     word-break: break-all;
 }
 
+/* ── Details ────────────────────────────────────────── */
 .confirmation-details {
-    text-align: left;
-    background: var(--bg-card2);
-    border-radius: 10px;
-    padding: 1.2rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
     margin-bottom: 1.5rem;
 }
 
 .cd-row {
     display: flex;
-    align-items: flex-start;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1.1rem;
+    font-size: 0.875rem;
     gap: 1rem;
-    padding: 0.55rem 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.9rem;
+    flex-wrap: wrap;
 }
 
-.cd-row:last-child {
-    border: none;
+.cd-row:not(:last-child) {
+    border-bottom: 1px solid var(--border);
 }
 
 .cd-row span:first-child {
+    color: var(--text-muted);
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.cd-row span:last-child {
+    text-align: right;
     color: var(--text-secondary);
-    min-width: 110px;
 }
 
-.ordered-items {
-    text-align: left;
-    margin-bottom: 1.8rem;
-}
-
+/* ── Items ──────────────────────────────────────────── */
 .ordered-items h3 {
     font-size: 1rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
 }
 
 .oi-row {
     display: flex;
     align-items: center;
-    gap: 0.8rem;
-    padding: 0.6rem 0;
-    font-size: 0.9rem;
+    gap: 0.9rem;
+    padding: 0.65rem 0;
+    font-size: 0.875rem;
 }
 
 .oi-row img {
     width: 46px;
     height: 46px;
     object-fit: cover;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+    background: var(--bg-secondary);
 }
 
 .oi-name {
@@ -124,19 +137,44 @@
 }
 
 .oi-qty {
-    color: var(--text-secondary);
+    color: var(--text-muted);
+    flex-shrink: 0;
 }
 
 .oi-price {
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.summary-row-conf {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+}
+
+.total-conf {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.total-conf span:last-child {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--primary-light);
+}
+
+.free-chip {
+    color: var(--success-light);
     font-weight: 600;
 }
 
-.total-row {
-    font-weight: 600;
-}
-
+/* ── Actions ────────────────────────────────────────── */
 .confirmation-actions {
     display: flex;
-    gap: 1rem;
+    gap: 0.75rem;
     justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1.75rem;
 }
