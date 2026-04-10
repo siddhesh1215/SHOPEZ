@@ -8,7 +8,14 @@ const errorHandler = require('./middleware/errorMiddleware');
 dotenv.config();
 
 // Connect to database
-connectDB();
+connectDB().then(() => {
+    const PORT = process.env.PORT || 5000;
+
+    app.listen(PORT, () => {
+        console.log(`🚀 Server running at http://localhost:${PORT}`);
+    });
+});
+
 
 const app = express();
 
@@ -18,7 +25,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // Enable CORS
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: [
+        'http://localhost:5173',
+        'https://shopez-app.vercel.app'
+    ],
     credentials: true,
 }));
 
